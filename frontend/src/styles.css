@@ -179,7 +179,7 @@ body {
   background: none;
   padding: 10px 12px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   border-radius: 10px;
   font-size: 0.95rem;
@@ -193,6 +193,30 @@ body {
 
 .profile-menu button.logout {
   color: #dc2626;
+}
+
+.profile-menu-icon {
+  font-size: 1rem;
+  line-height: 1.4;
+  width: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-menu-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.profile-menu-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.profile-menu-text small {
+  color: #64748b;
+  font-size: 0.78rem;
 }
 
 .view-shell {

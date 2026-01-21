@@ -31,6 +31,47 @@ function App() {
     }, 200)
   }
 
+  const profileMenuItems = [
+    {
+      key: "account",
+      icon: "≡",
+      label: "Account",
+      detail: "View membership ID, loyalty tier, and saved guests.",
+      onClick: () => {
+        setShowProfileMenu(false)
+        navigate("/dashboard#account")
+      }
+    },
+    {
+      key: "settings",
+      icon: "⚙",
+      label: "Settings",
+      detail: "Update contact info, alerts, and security preferences.",
+      onClick: () => {
+        setShowProfileMenu(false)
+        navigate("/dashboard#preferences")
+      }
+    },
+    {
+      key: "dashboard",
+      icon: "🧳",
+      label: "Dashboard",
+      detail: "Review trips, receipts, and payment methods in one place.",
+      onClick: () => {
+        setShowProfileMenu(false)
+        navigate("/dashboard")
+      }
+    },
+    {
+      key: "logout",
+      icon: "⇦",
+      label: "Log Out",
+      detail: "Sign out securely from SmartStays.",
+      onClick: handleLogout,
+      destructive: true
+    }
+  ]
+
   return (
     <div className="app-shell">
         <header className="site-header">
@@ -55,22 +96,21 @@ function App() {
                 </button>
                 {showProfileMenu && (
                   <div className="profile-menu">
-                    <button type="button">
-                      <span>≡</span>
-                      Account
-                    </button>
-                    <button type="button">
-                      <span>⚙</span>
-                      Settings
-                    </button>
-                    <button type="button" onClick={() => { navigate("/dashboard"); setShowProfileMenu(false); }}>
-                      <span>🧳</span>
-                      Dashboard
-                    </button>
-                    <button type="button" className="logout" onClick={handleLogout}>
-                      <span>⇦</span>
-                      Log Out
-                    </button>
+                    {profileMenuItems.map((item) => (
+                      <button
+                        key={item.key}
+                        type="button"
+                        className={item.destructive ? "logout" : undefined}
+                        onClick={item.onClick}
+                        title={item.detail}
+                      >
+                        <span className="profile-menu-icon" aria-hidden="true">{item.icon}</span>
+                        <div className="profile-menu-text">
+                          <span className="profile-menu-label">{item.label}</span>
+                          <small>{item.detail}</small>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
