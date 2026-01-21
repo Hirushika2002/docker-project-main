@@ -55,6 +55,7 @@ Developer Push Code
 **Git Repository**: Developer pushes code to GitHub/GitLab. Webhook automatically triggers Jenkins pipeline.
 
 **Jenkins CI/CD Server**: Orchestrates 7-stage pipeline:
+
 1. **Code Checkout**: Git clone and branch detection
 2. **Build & Test**: npm install, npm run build, ESLint validation
 3. **Docker Build**: Creates frontend and backend container images
@@ -63,20 +64,23 @@ Developer Push Code
 6. **Deploy Containers**: Docker Compose starts all services
 7. **Smoke Tests**: Validates all services are healthy
 
-**Configuration Management**: 
+**Configuration Management**:
+
 - Terraform: Provisions cloud infrastructure (VMs, networks, security groups)
 - Ansible: Installs Docker, configures systems, manages deployments
 
 **Docker Registry**: Central storage for container images (Docker Hub or private registry)
 
-**Deployment Environment**: 
+**Deployment Environment**:
+
 - Hosts Docker engine with Docker Compose
 - Frontend: Nginx web server on port 4000
-- Backend: Node.js Express API on port 3000  
+- Backend: Node.js Express API on port 3000
 - Database: MongoDB on port 27017 with persistent volume
 - Services communicate through Docker bridge network
 
 **Application Component Connectivity**:
+
 - Frontend makes HTTP requests to Backend on port 3000
 - Backend connects to MongoDB on port 27017
 - All services share Docker network for inter-service communication
@@ -88,18 +92,19 @@ Developer Push Code
 
 ### 1. DevOps Tools & Versions
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **Git** | 2.40+ | Version control for code management |
-| **Jenkins** | 2.387+ | CI/CD automation server orchestrating the pipeline |
-| **Terraform** | 1.5+ | Infrastructure as Code for provisioning cloud resources |
-| **Ansible** | 2.14+ | Configuration management for system setup and deployment |
-| **Docker** | 24.0+ | Containerization of application services |
-| **Docker Compose** | 2.20+ | Orchestration of multiple containers with networking |
+| Tool               | Version | Purpose                                                  |
+| ------------------ | ------- | -------------------------------------------------------- |
+| **Git**            | 2.40+   | Version control for code management                      |
+| **Jenkins**        | 2.387+  | CI/CD automation server orchestrating the pipeline       |
+| **Terraform**      | 1.5+    | Infrastructure as Code for provisioning cloud resources  |
+| **Ansible**        | 2.14+   | Configuration management for system setup and deployment |
+| **Docker**         | 24.0+   | Containerization of application services                 |
+| **Docker Compose** | 2.20+   | Orchestration of multiple containers with networking     |
 
 ### 2. Application Tools & Dependencies
 
 **Frontend Stack:**
+
 - Node.js 22 - JavaScript runtime
 - React 19.1.1 - UI framework
 - React Router DOM 7.9.1 - Client-side routing
@@ -109,12 +114,14 @@ Developer Push Code
 - Nginx stable-alpine - Production web server
 
 **Backend Stack:**
+
 - Node.js 22 - JavaScript runtime
 - Express.js 5.1.0 - REST API framework
 - Mongoose 8.18.1 - MongoDB ODM
 - CORS 2.8.5 - Cross-origin request handling
 
 **Database:**
+
 - MongoDB - NoSQL database for hotel booking data
 
 ### 3. Automated Deployment Pipeline
@@ -175,17 +182,20 @@ Success Notification (Slack/Email) → Deployment Complete
 #### **Stage Details**
 
 **Stage 1: Code Checkout**
+
 - Automatically pulls latest code from Git on webhook trigger
 - Checks out correct branch (main/develop)
 - Verifies commit integrity
 
 **Stage 2: Build & Test**
+
 - Installs npm dependencies for both frontend and backend
 - Builds React application using Vite
 - Runs ESLint code quality checks
 - Verifies backend dependencies
 
 **Stage 3: Docker Image Build**
+
 - **Frontend**: Multi-stage build
   - Stage 1: node:22 installs dependencies and builds React app
   - Stage 2: nginx:alpine serves static files on port 80
@@ -196,12 +206,14 @@ Success Notification (Slack/Email) → Deployment Complete
 - Tags images with build number and latest for versioning
 
 **Stage 4: Registry Push**
+
 - Authenticates with Docker Hub or private registry
 - Pushes frontend image with tags (build number, latest)
 - Pushes backend image with tags (build number, latest)
 - Enables rollback capability by maintaining versioned images
 
 **Stage 5: Infrastructure Provisioning**
+
 - **Terraform**:
   - Provisions cloud VM instances (AWS EC2/Azure VM/On-premises)
   - Creates security groups and firewall rules
@@ -215,6 +227,7 @@ Success Notification (Slack/Email) → Deployment Complete
   - Configures user permissions and security
 
 **Stage 6: Deploy Application**
+
 - Copies Docker Compose file to target server
 - Pulls latest container images from registry
 - Stops and removes old containers
@@ -226,6 +239,7 @@ Success Notification (Slack/Email) → Deployment Complete
 - Sets environment variables for inter-service connectivity
 
 **Stage 7: Smoke Tests & Validation**
+
 - Frontend health check (HTTP 200 response on port 4000)
 - Backend health check (API responds on port 3000)
 - Database connectivity test via backend API
@@ -260,6 +274,7 @@ Success Notification (Slack/Email) → Deployment Complete
 ## Summary
 
 This CI/CD pipeline for the Hotel Booking Application provides:
+
 - Continuous integration of code changes with automated testing
 - Infrastructure provisioning via Terraform and system configuration via Ansible
 - Containerized deployment with Docker and Docker Compose
