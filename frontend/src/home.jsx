@@ -26,14 +26,39 @@ const buildHighlightCopy = (hotel) => [
   }
 ];
 
-const buildGallery = (primaryImage) => [
-  primaryImage,
-  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1505692794400-4d1d31494134?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1501117716987-c8e1ecb210cc?auto=format&fit=crop&w=900&q=80"
+const allHotelImages = [
+  "/images/hotels/pexels-23audiovisual-28909289.jpg",
+  "/images/hotels/pexels-aasif-pathan-321950386-31222661.jpg",
+  "/images/hotels/pexels-artbovich-7746042.jpg",
+  "/images/hotels/pexels-artbovich-8092391.jpg",
+  "/images/hotels/pexels-asphotography-97083.jpg",
+  "/images/hotels/pexels-cottonbro-6466216.jpg",
+  "/images/hotels/pexels-cottonbro-6466295.jpg",
+  "/images/hotels/pexels-cottonbro-6466490.jpg",
+  "/images/hotels/pexels-olly-3769980.jpg",
+  "/images/hotels/pexels-perqued-13722872.jpg",
+  "/images/hotels/pexels-quang-nguyen-vinh-222549-29000012.jpg",
+  "/images/hotels/pexels-suhel-vba-1749662-3659683.jpg",
+  "/images/hotels/pexels-the-7-hotel-lisbon-1817831-18201945.jpg",
+  "/images/hotels/pexels-tima-miroshnichenko-6010267.jpg",
+  "/images/hotels/pexels-ushindinamegabe-10024088.jpg",
+  "/images/hotels/pexels-vince-28962539.jpg"
 ];
+
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+const buildGallery = (primaryImage) => {
+  const otherImages = allHotelImages.filter(img => img !== primaryImage);
+  const shuffled = shuffleArray(otherImages).slice(0, 5);
+  return [primaryImage, ...shuffled];
+};
 
 const buildMapEmbedUrl = (coordinates) =>
   coordinates ? `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}&z=15&output=embed` : "";
@@ -116,7 +141,7 @@ const sriLankaDestinations = [
         area: "City Centre, Kandy",
         price: "LKR 143,407",
         perks: ["Free cancellation", "No prepayment needed"],
-        image: "https://images.unsplash.com/photo-1501117716987-c8e1ecb210cc?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-23audiovisual-28909289.jpg",
         rating: 5.5,
         badge: "Genius",
         coordinates: { lat: 7.2906, lng: 80.6337 },
@@ -130,7 +155,7 @@ const sriLankaDestinations = [
         area: "Lakefront, Kandy",
         price: "LKR 100,051",
         perks: ["Breakfast included", "Pay at property"],
-        image: "https://images.unsplash.com/photo-1505692794400-4d1d31494134?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-aasif-pathan-321950386-31222661.jpg",
         rating: 8.6,
         badge: "Featured",
         coordinates: { lat: 7.2915, lng: 80.6411 },
@@ -144,7 +169,7 @@ const sriLankaDestinations = [
         area: "Upper Lake Drive, Kandy",
         price: "LKR 156,800",
         perks: ["Rooftop plunge pool", "Complimentary high tea"],
-        image: "https://images.unsplash.com/photo-1508255139162-e1f7b7288ab7?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-artbovich-7746042.jpg",
         rating: 9.2,
         badge: "Top pick",
         coordinates: { lat: 7.2832, lng: 80.6518 },
@@ -158,7 +183,7 @@ const sriLankaDestinations = [
         area: "Dalada Veediya, Kandy",
         price: "LKR 112,300",
         perks: ["Temple of the Tooth views", "Spa access"],
-        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-artbovich-8092391.jpg",
         rating: 8.1,
         badge: "Great value",
         coordinates: { lat: 7.2939, lng: 80.6409 },
@@ -172,7 +197,7 @@ const sriLankaDestinations = [
         area: "Peradeniya, Kandy",
         price: "LKR 175,990",
         perks: ["Tea estate tours", "Private butler"],
-        image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-asphotography-97083.jpg",
         rating: 9.6,
         badge: "Guest favorite",
         coordinates: { lat: 7.2731, lng: 80.595 },
@@ -193,7 +218,7 @@ const sriLankaDestinations = [
         area: "Fort, Colombo",
         price: "LKR 189,000",
         perks: ["Executive lounge", "Free cancellation"],
-        image: "https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-cottonbro-6466216.jpg",
         rating: 9.1,
         badge: "Top pick",
         coordinates: { lat: 6.9355, lng: 79.843 },
@@ -207,7 +232,7 @@ const sriLankaDestinations = [
         area: "Marine Drive, Colombo",
         price: "LKR 121,400",
         perks: ["Infinity pool", "24/7 concierge"],
-        image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-cottonbro-6466295.jpg",
         rating: 8.2,
         badge: "Value",
         coordinates: { lat: 6.9003, lng: 79.856 },
@@ -221,7 +246,7 @@ const sriLankaDestinations = [
         area: "Galle Face Green",
         price: "LKR 210,500",
         perks: ["Colonial suites", "Champagne breakfast"],
-        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-cottonbro-6466490.jpg",
         rating: 9.3,
         badge: "Iconic",
         coordinates: { lat: 6.9196, lng: 79.8489 },
@@ -235,7 +260,7 @@ const sriLankaDestinations = [
         area: "Colombo 02",
         price: "LKR 134,200",
         perks: ["Sky bar", "Early check-in"] ,
-        image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-olly-3769980.jpg",
         rating: 8.8,
         badge: "High demand",
         coordinates: { lat: 6.9236, lng: 79.861 },
@@ -249,7 +274,7 @@ const sriLankaDestinations = [
         area: "World Trade Center",
         price: "LKR 149,900",
         perks: ["Boardroom access", "Spa credits"],
-        image: "https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-perqued-13722872.jpg",
         rating: 8.5,
         badge: "Business",
         coordinates: { lat: 6.9331, lng: 79.8438 },
@@ -270,7 +295,7 @@ const sriLankaDestinations = [
         area: "Ella Gap",
         price: "LKR 84,900",
         perks: ["Panoramic deck", "Organic breakfast"],
-        image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-aasif-pathan-321950386-31222661.jpg",
         rating: 9.4,
         badge: "Guest favorite",
         coordinates: { lat: 6.8667, lng: 81.0469 },
@@ -284,7 +309,7 @@ const sriLankaDestinations = [
         area: "Little Adam's Peak",
         price: "LKR 97,300",
         perks: ["Cliff-edge infinity pool", "Guided hikes"],
-        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-artbovich-7746042.jpg",
         rating: 9.0,
         badge: "Adventure",
         coordinates: { lat: 6.8585, lng: 81.0517 },
@@ -298,7 +323,7 @@ const sriLankaDestinations = [
         area: "Ella Rock",
         price: "LKR 78,600",
         perks: ["Suspended decks", "Complimentary yoga"],
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-artbovich-8092391.jpg",
         rating: 8.9,
         badge: "Eco",
         coordinates: { lat: 6.8705, lng: 81.0614 },
@@ -312,7 +337,7 @@ const sriLankaDestinations = [
         area: "Demodara Loop",
         price: "LKR 92,450",
         perks: ["Private chef", "Sunrise rail views"],
-        image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-asphotography-97083.jpg",
         rating: 9.5,
         badge: "Rare find",
         coordinates: { lat: 6.8936, lng: 81.0602 },
@@ -326,7 +351,7 @@ const sriLankaDestinations = [
         area: "Nine Arches Road",
         price: "LKR 88,120",
         perks: ["Tea tasting", "Butler service"],
-        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-vince-28962539.jpg",
         rating: 9.1,
         badge: "Boutique",
         coordinates: { lat: 6.8724, lng: 81.0619 },
@@ -347,7 +372,7 @@ const sriLankaDestinations = [
         area: "Pedro Estate",
         price: "LKR 132,250",
         perks: ["Fireplace suites", "High tea included"],
-        image: "https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-quang-nguyen-vinh-222549-29000012.jpg",
         rating: 8.9,
         badge: "New",
         coordinates: { lat: 6.9497, lng: 80.7891 },
@@ -361,7 +386,7 @@ const sriLankaDestinations = [
         area: "Lake Gregory",
         price: "LKR 118,760",
         perks: ["Lakefront dining", "Boat rides"],
-        image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-suhel-vba-1749662-3659683.jpg",
         rating: 8.7,
         badge: "Scenic",
         coordinates: { lat: 6.957, lng: 80.7824 },
@@ -375,7 +400,7 @@ const sriLankaDestinations = [
         area: "Single Tree Hill",
         price: "LKR 167,450",
         perks: ["Whiskey library", "Sauna access"],
-        image: "https://images.unsplash.com/photo-1469796466635-455ede028aca?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-the-7-hotel-lisbon-1817831-18201945.jpg",
         rating: 9.0,
         badge: "Luxury",
         coordinates: { lat: 6.9668, lng: 80.777 },
@@ -389,7 +414,7 @@ const sriLankaDestinations = [
         area: "Haddon Hill",
         price: "LKR 101,300",
         perks: ["Hot tub", "Garden brunch"],
-        image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-tima-miroshnichenko-6010267.jpg",
         rating: 8.5,
         badge: "Cozy",
         coordinates: { lat: 6.9802, lng: 80.7829 },
@@ -403,7 +428,7 @@ const sriLankaDestinations = [
         area: "Victoria Park",
         price: "LKR 139,900",
         perks: ["Horseback riding", "Heated pool"],
-        image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=900&q=80",
+        image: "/images/hotels/pexels-ushindinamegabe-10024088.jpg",
         rating: 9.2,
         badge: "Family",
         coordinates: { lat: 6.9646, lng: 80.7603 },
