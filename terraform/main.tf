@@ -285,7 +285,17 @@ resource "aws_ecs_service" "hotel_booking_service" {
     assign_public_ip = true
   }
 
-  depends_on = []
+  // Attach to ALB target group only when ALB is enabled
+  dynamic "load_balancer" {
+    for_each = var.enable_alb ? [1] : []
+    content {
+      target_group_arn = aws_lb_target_group.hotel_booking_tg[0].arn
+      container_name   = "hotel-booking-backend"
+      container_port   = 3000
+    }
+  }
+
+  depends_on = var.enable_alb ? [aws_lb_listener.hotel_booking_listener] : []
 
   tags = {
     Name = "hotel-booking-service"

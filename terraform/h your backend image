@@ -1,0 +1,16 @@
+{
+    "repository": {
+        "repositoryArn": "arn:aws:ecr:us-east-1:348831585927:repository/hotel-booking-backend",
+        "registryId": "348831585927",
+        "repositoryName": "hotel-booking-backend",
+        "repositoryUri": "348831585927.dkr.ecr.us-east-1.amazonaws.com/hotel-booking-backend",
+        "createdAt": "2026-02-14T22:07:06.296000+05:30",
+        "imageTagMutability": "MUTABLE",
+        "imageScanningConfiguration": {
+            "scanOnPush": false
+        },
+        "encryptionConfiguration": {
+            "encryptionType": "AES256"
+        }
+    }
+}
