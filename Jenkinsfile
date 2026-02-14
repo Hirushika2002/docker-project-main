@@ -92,12 +92,20 @@ pipeline {
         failure {
             echo 'Pipeline failed!'
             script {
-                bat 'docker-compose -f compose.yml down'
+                if (env.WORKSPACE) {
+                    bat 'docker-compose -f compose.yml down'
+                } else {
+                    echo 'Skipping docker-compose down: no workspace context'
+                }
             }
         }
         always {
             script {
-                bat 'docker logout'
+                if (env.WORKSPACE) {
+                    bat 'docker logout'
+                } else {
+                    echo 'Skipping docker logout: no workspace context'
+                }
             }
         }
     }
