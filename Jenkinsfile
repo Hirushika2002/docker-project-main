@@ -158,6 +158,27 @@ pipeline {
             }
         }
 
+        stage('Show Application URL') {
+            steps {
+                script {
+                    def tfExists = fileExists('terraform/main.tf')
+                    def tfAvailable = (sh(script: 'command -v terraform >/dev/null 2>&1', returnStatus: true) == 0)
+                    if (!tfExists || !tfAvailable) {
+                        echo 'Terraform not configured or not installed; skipping Application URL output.'
+                        return
+                    }
+                    dir('terraform') {
+                        def url = sh(script: 'terraform output -raw application_url 2>/dev/null || true', returnStdout: true).trim()
+                        if (url && url.length() > 0) {
+                            echo "Application URL: ${url}"
+                        } else {
+                            echo 'Application URL not available. Ensure terraform apply succeeded and outputs are defined.'
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 script {
