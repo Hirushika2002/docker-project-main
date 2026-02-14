@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     environment {
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_USERNAME = credentials('docker-username')
