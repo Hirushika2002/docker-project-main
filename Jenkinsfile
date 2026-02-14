@@ -19,6 +19,37 @@ pipeline {
             }
         }
 
+        stage('Agent Info') {
+            steps {
+                script {
+                    echo 'Collecting agent environment information...'
+                    sh '''
+                      set -e
+                      echo "User:" $(whoami)
+                      echo "ID:" $(id)
+                      echo "Groups:" $(groups)
+                      echo "Docker socket permissions:"; ls -l /var/run/docker.sock || true
+                      echo "Docker version:"; docker version || true
+                      echo "Docker info accessible?"; docker info >/dev/null 2>&1 && echo yes || echo no
+                    '''
+                }
+            }
+        }
+
+        stage('Check Docker Access') {
+            steps {
+                script {
+                    echo 'Checking Docker daemon access...'
+                    def status = sh(script: 'docker info >/dev/null 2>&1', returnStatus: true)
+                    if (status != 0) {
+                        error 'Docker daemon not accessible for Jenkins user. Add Jenkins to docker group and restart services.'
+                    } else {
+                        echo 'Docker daemon is accessible.'
+                    }
+                }
+            }
+        }
+
         stage('Build Backend') {
             steps {
                 dir('backend') {
