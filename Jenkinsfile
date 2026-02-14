@@ -25,11 +25,7 @@ pipeline {
                 dir('backend') {
                     script {
                         echo 'Building backend Docker image...'
-                        if (isUnix()) {
-                            sh 'docker build -t hotel-booking-backend:${IMAGE_TAG} .'
-                        } else {
-                            bat 'docker build -t hotel-booking-backend:${IMAGE_TAG} .'
-                        }
+                        bat 'docker build -t hotel-booking-backend:${IMAGE_TAG} .'
                         echo 'Backend build completed'
                     }
                 }
@@ -41,11 +37,7 @@ pipeline {
                 dir('frontend') {
                     script {
                         echo 'Building frontend Docker image...'
-                        if (isUnix()) {
-                            sh 'docker build -t hotel-booking-frontend:${IMAGE_TAG} .'
-                        } else {
-                            bat 'docker build -t hotel-booking-frontend:${IMAGE_TAG} .'
-                        }
+                        bat 'docker build -t hotel-booking-frontend:${IMAGE_TAG} .'
                         echo 'Frontend build completed'
                     }
                 }
@@ -56,29 +48,15 @@ pipeline {
             steps {
                 script {
                     echo 'Logging into Docker Registry...'
-                    if (isUnix()) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    } else {
-                        bat 'echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin'
-                    }
+                    bat 'echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin'
                     
                     echo 'Pushing backend image...'
-                    if (isUnix()) {
-                        sh 'docker tag hotel-booking-backend:${IMAGE_TAG} ${DOCKER_REGISTRY}/hotel-booking-backend:${IMAGE_TAG}'
-                        sh 'docker push ${DOCKER_REGISTRY}/hotel-booking-backend:${IMAGE_TAG}'
-                    } else {
-                        bat 'docker tag hotel-booking-backend:${IMAGE_TAG} %DOCKER_REGISTRY%/hotel-booking-backend:${IMAGE_TAG}'
-                        bat 'docker push %DOCKER_REGISTRY%/hotel-booking-backend:${IMAGE_TAG}'
-                    }
+                    bat 'docker tag hotel-booking-backend:${IMAGE_TAG} %DOCKER_REGISTRY%/hotel-booking-backend:${IMAGE_TAG}'
+                    bat 'docker push %DOCKER_REGISTRY%/hotel-booking-backend:${IMAGE_TAG}'
                     
                     echo 'Pushing frontend image...'
-                    if (isUnix()) {
-                        sh 'docker tag hotel-booking-frontend:${IMAGE_TAG} ${DOCKER_REGISTRY}/hotel-booking-frontend:${IMAGE_TAG}'
-                        sh 'docker push ${DOCKER_REGISTRY}/hotel-booking-frontend:${IMAGE_TAG}'
-                    } else {
-                        bat 'docker tag hotel-booking-frontend:${IMAGE_TAG} %DOCKER_REGISTRY%/hotel-booking-frontend:${IMAGE_TAG}'
-                        bat 'docker push %DOCKER_REGISTRY%/hotel-booking-frontend:${IMAGE_TAG}'
-                    }
+                    bat 'docker tag hotel-booking-frontend:${IMAGE_TAG} %DOCKER_REGISTRY%/hotel-booking-frontend:${IMAGE_TAG}'
+                    bat 'docker push %DOCKER_REGISTRY%/hotel-booking-frontend:${IMAGE_TAG}'
                 }
             }
         }
@@ -87,11 +65,7 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying application with Docker Compose...'
-                    if (isUnix()) {
-                        sh 'docker-compose -f compose.yml up -d'
-                    } else {
-                        bat 'docker-compose -f compose.yml up -d'
-                    }
+                    bat 'docker-compose -f compose.yml up -d'
                     echo 'Deployment completed'
                 }
             }
@@ -102,13 +76,8 @@ pipeline {
                 script {
                     echo 'Running health checks...'
                     sleep(time: 10, unit: 'SECONDS')
-                    if (isUnix()) {
-                        sh 'curl -f http://localhost:3000 || exit 1'
-                        sh 'curl -f http://localhost:80 || exit 1'
-                    } else {
-                        bat 'curl -f http://localhost:3000'
-                        bat 'curl -f http://localhost:80'
-                    }
+                    bat 'curl -f http://localhost:3000'
+                    bat 'curl -f http://localhost:80'
                     echo 'Health checks passed'
                 }
             }
@@ -123,20 +92,12 @@ pipeline {
         failure {
             echo 'Pipeline failed!'
             script {
-                if (isUnix()) {
-                    sh 'docker-compose -f compose.yml down'
-                } else {
-                    bat 'docker-compose -f compose.yml down'
-                }
+                bat 'docker-compose -f compose.yml down'
             }
         }
         always {
             script {
-                if (isUnix()) {
-                    sh 'docker logout'
-                } else {
-                    bat 'docker logout'
-                }
+                bat 'docker logout'
             }
         }
     }
