@@ -1,11 +1,11 @@
 output "alb_dns_name" {
-  description = "DNS name of the load balancer"
-  value       = aws_lb.hotel_booking_alb.dns_name
+  description = "DNS name of the load balancer (empty if ALB disabled)"
+  value       = var.enable_alb && length(aws_lb.hotel_booking_alb) > 0 ? aws_lb.hotel_booking_alb[0].dns_name : ""
 }
 
 output "alb_arn" {
-  description = "ARN of the load balancer"
-  value       = aws_lb.hotel_booking_alb.arn
+  description = "ARN of the load balancer (empty if ALB disabled)"
+  value       = var.enable_alb && length(aws_lb.hotel_booking_alb) > 0 ? aws_lb.hotel_booking_alb[0].arn : ""
 }
 
 output "ecs_cluster_name" {
@@ -39,6 +39,6 @@ output "cloudwatch_log_group" {
 }
 
 output "application_url" {
-  description = "URL to access the hotel booking application"
-  value       = "http://${aws_lb.hotel_booking_alb.dns_name}"
+  description = "URL to access the application (ALB). Empty if ALB disabled."
+  value       = var.enable_alb && length(aws_lb.hotel_booking_alb) > 0 ? "http://${aws_lb.hotel_booking_alb[0].dns_name}" : ""
 }

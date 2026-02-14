@@ -114,17 +114,10 @@ resource "aws_security_group" "ecs_sg" {
   vpc_id      = aws_vpc.hotel_booking_vpc.id
 
   ingress {
-    from_port       = 3000
-    to_port         = 3000
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
-  }
-
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -141,6 +134,7 @@ resource "aws_security_group" "ecs_sg" {
 
 # Application Load Balancer
 resource "aws_lb" "hotel_booking_alb" {
+  count              = var.enable_alb ? 1 : 0
   name               = "hotel-booking-alb"
   internal           = false
   load_balancer_type = "application"
@@ -154,6 +148,7 @@ resource "aws_lb" "hotel_booking_alb" {
 
 # ALB Target Group
 resource "aws_lb_target_group" "hotel_booking_tg" {
+  count       = var.enable_alb ? 1 : 0
   name        = "hotel-booking-tg"
   port        = 3000
   protocol    = "HTTP"
@@ -176,13 +171,14 @@ resource "aws_lb_target_group" "hotel_booking_tg" {
 
 # ALB Listener
 resource "aws_lb_listener" "hotel_booking_listener" {
-  load_balancer_arn = aws_lb.hotel_booking_alb.arn
+  count             = var.enable_alb ? 1 : 0
+  load_balancer_arn = aws_lb.hotel_booking_alb[0].arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.hotel_booking_tg.arn
+    target_group_arn = aws_lb_target_group.hotel_booking_tg[0].arn
   }
 }
 
@@ -211,12 +207,35 @@ resource "aws_ecs_cluster" "hotel_booking_cluster" {
 }
 
 # ECS Task Definition
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecsTaskExecutionRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
 resource "aws_ecs_task_definition" "hotel_booking_task" {
   family                   = "hotel-booking-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.ecs_task_cpu
   memory                   = var.ecs_task_memory
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -261,18 +280,12 @@ resource "aws_ecs_service" "hotel_booking_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [aws_subnet.private_subnet.id]
+    subnets          = [aws_subnet.public_subnet.id]
     security_groups  = [aws_security_group.ecs_sg.id]
-    assign_public_ip = false
+    assign_public_ip = true
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.hotel_booking_tg.arn
-    container_name   = "hotel-booking-backend"
-    container_port   = 3000
-  }
-
-  depends_on = [aws_lb_listener.hotel_booking_listener]
+  depends_on = []
 
   tags = {
     Name = "hotel-booking-service"

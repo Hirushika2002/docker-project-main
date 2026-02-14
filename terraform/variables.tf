@@ -63,3 +63,9 @@ variable "docker_image_frontend" {
   type        = string
   default     = "hotel-booking-frontend"
 }
+
+variable "enable_alb" {
+  description = "Enable creation of an ALB for the service"
+  type        = bool
+  default     = false
+}
