@@ -126,19 +126,33 @@ pipeline {
         stage('Deploy to AWS') {
             steps {
                 script {
-                    // Deploy via Terraform if available and terraform is installed
+                    // Deploy via Terraform only if tools and AWS credentials are available
                     def tfExists = fileExists('terraform/main.tf')
                     def tfAvailable = (sh(script: 'command -v terraform >/dev/null 2>&1', returnStatus: true) == 0)
-                    if (tfExists && tfAvailable) {
-                        dir('terraform') {
-                            sh '''
-                              set -e
-                              terraform init -input=false
-                              terraform apply -auto-approve -input=false
-                            '''
-                        }
-                    } else {
+                    def awsCliAvailable = (sh(script: 'command -v aws >/dev/null 2>&1', returnStatus: true) == 0)
+
+                    if (!tfExists || !tfAvailable) {
                         echo 'Terraform not configured or not installed; skipping deploy.'
+                        return
+                    }
+                    if (!awsCliAvailable) {
+                        echo 'AWS CLI not installed; skipping deploy.'
+                        return
+                    }
+
+                    def credsOk = (sh(script: 'aws sts get-caller-identity >/dev/null 2>&1', returnStatus: true) == 0)
+                    if (!credsOk) {
+                        echo 'AWS credentials not configured for this agent; skipping deploy.'
+                        echo 'Set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_REGION (or configure IAM role).'
+                        return
+                    }
+
+                    dir('terraform') {
+                        sh '''
+                          set -e
+                          terraform init -input=false
+                          terraform apply -auto-approve -input=false
+                        '''
                     }
                 }
             }
