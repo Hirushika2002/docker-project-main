@@ -295,8 +295,6 @@ resource "aws_ecs_service" "hotel_booking_service" {
     }
   }
 
-  depends_on = var.enable_alb ? [aws_lb_listener.hotel_booking_listener] : []
-
   tags = {
     Name = "hotel-booking-service"
   }
