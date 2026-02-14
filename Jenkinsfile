@@ -122,7 +122,7 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed!'
-            node {
+            script {
                 if (isUnix()) {
                     sh 'docker-compose -f compose.yml down'
                 } else {
@@ -131,7 +131,7 @@ pipeline {
             }
         }
         always {
-            node {
+            script {
                 if (isUnix()) {
                     sh 'docker logout'
                 } else {
