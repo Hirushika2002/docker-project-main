@@ -1,23 +1,40 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'ubuntu:22.04'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            label 'built-in'
+        }
+    }
 
     options {
         timestamps()
     }
 
     environment {
-        // Prepend Jenkins home bin to PATH to shadow nohup with wrapper
-        PATH = "/var/jenkins_home/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         IMAGE_TAG = "${BUILD_NUMBER}"
         // Optional: set AWS details in Jenkins global env or per-job
         // AWS_ACCOUNT_ID, AWS_REGION can be provided to enable ECR pushes
     }
 
     stages {
-        stage('Checkout') {
+        stage('Setup Tools') {
             steps {
-                checkout scm
-                echo 'Code checkout completed'
+                script {
+                    echo 'Installing prerequisites inside Docker agent (ubuntu:22.04)...'
+                    sh '''
+                      set -e
+                      apt-get update -y
+                      DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl unzip git docker.io
+                      update-ca-certificates
+                      curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip
+                      unzip -q awscliv2.zip
+                      ./aws/install
+                      aws --version || true
+                      which -a nohup || true
+                    '''
+                }
             }
         }
 
@@ -27,6 +44,9 @@ pipeline {
                     echo 'Collecting agent environment information...'
                     sh '''
                       set -e
+                      echo "PATH: $PATH"
+                      which -a sh || true
+                      which -a nohup || true
                       echo "User:" $(whoami)
                       echo "ID:" $(id)
                       echo "Groups:" $(groups)
