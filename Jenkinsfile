@@ -6,6 +6,8 @@ pipeline {
     }
 
     environment {
+        // Prepend Jenkins home bin to PATH to shadow nohup with wrapper
+        PATH = "/var/jenkins_home/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         IMAGE_TAG = "${BUILD_NUMBER}"
         // Optional: set AWS details in Jenkins global env or per-job
         // AWS_ACCOUNT_ID, AWS_REGION can be provided to enable ECR pushes
